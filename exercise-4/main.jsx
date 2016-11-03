@@ -1,4 +1,3 @@
-// Main.jsx file
 
 // Data to pass to our List elements
 var employeeData = [

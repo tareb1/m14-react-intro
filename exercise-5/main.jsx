@@ -16,15 +16,15 @@ var MovieControls = React.createClass({
             <div>
                 <h5>Sort By:</h5>
                 <p>
-                    <input name="group1" type="radio" id="popularity" defaultChecked/>
+                    <input onClick={this.props.clickEvent} name="group1" type="radio" id="popularity" defaultChecked/>
                     <label htmlFor="popularity">Popularity</label>
                 </p>
                 <p>
-                    <input name="group1" type="radio" id="vote_count" />
+                    <input onClick={this.props.clickEvent} name="group1" type="radio" id="vote_count" />
                     <label htmlFor="vote_count">Vote Count</label>
                 </p>
                 <p>
-                    <input name="group1" type="radio" id="vote_average"  />
+                    <input onClick={this.props.clickEvent} name="group1" type="radio" id="vote_average"  />
                     <label htmlFor="vote_average">Vote Average</label>
                 </p>
             </div>
@@ -40,14 +40,14 @@ var MovieItem = React.createClass({
         // Taken from: http://materializecss.com/cards.html
         return(
                 <div className="col s3">
-                    <div className="card">
-                        <div className="card-image">
-                            <img alt="set photo src" src="" />
-                        </div>
-                        <div className="card-content">
-                            <p>PUT THE TITLE HERE</p>
-                        </div>
-                    </div>
+                    // <div className="card">
+                    //     <div className="card-image">
+                    //         <img src={imageUrl + this.props.data.poster_path + '?' + apiKey} />
+                    //     </div>
+                    //     <div className="card-content">
+                    //         <p>{this.props.data.title}</p>
+                    //     </div>
+                    // </div>
                 </div>
         )
     }
@@ -57,7 +57,7 @@ var MovieItem = React.createClass({
 var MovieApp = React.createClass({
     // Set initlal state: empty array for movies, order:'popularity'
     getInitialState:function() {
-        return null;
+        return {movies:[], order:'popularity'}
     },
 
     // Function to get movies from the API
@@ -79,22 +79,28 @@ var MovieApp = React.createClass({
 
     // Function to set the "order" of state
     setOrder:function(element) {
-
+        this.setState({order:element.target.id})
     },
 
     // When the component mounts, get the movies from the API
     componentDidMount:function() {
-
+        this.getMovies();
     },
 
     // Render function
     render:function() {
         // Sort your movies
+        let sortedMovies = this.sortMovies(this.state.movies, this.state.order)
 
-
-        // Return a MovieItem for each element in your sorted array, and a MovieControls element
+        // Return a MovieItem for each element in your sorted array
         return(
             <div className="container">
+                <MovieControls clickEvent={this.setOrder}/>
+                <div className="row">
+                    {sortedMovies.map(function(d, i){
+                        return <MovieItem key={'movie' + i} data={d} />
+                    })}
+                </div>
             </div>
         );
     }
